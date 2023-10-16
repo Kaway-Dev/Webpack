@@ -1,5 +1,8 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerWebPackPlugin = require('css-minimizer-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './app/src/js/app.js',
@@ -12,9 +15,13 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
     ],
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [new CssMinimizerWebPackPlugin(), '...'],
   },
   plugins: [
     new HtmlWebPackPlugin({
@@ -22,5 +29,9 @@ module.exports = {
       filename: 'app.html',
       hash: true,
     }),
+    new MiniCssExtractPlugin({
+      filename: 'style.css',
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
   ],
 };
